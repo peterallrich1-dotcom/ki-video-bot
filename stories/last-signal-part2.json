@@ -7,35 +7,159 @@
   "crew": 1,
   "title": "The Last Signal – Part 2: Something is outside the glass",
   "beats": [
-    {"scene": "airlock", "pose": "fear", "knock": true, "alarm": true, "highlight": ["knocks"],
-     "text": "Three knocks. Then silence."},
-    {"scene": "airlock", "pose": "listen", "highlight": ["nothing"],
-     "text": "Nothing should be out there. The nearest ship is four hundred million kilometers away."},
-    {"scene": "corridor", "pose": "walk", "highlight": ["ran"], "minute_offset": 1,
-     "text": "I ran to the control room."},
-    {"scene": "console", "pose": "reach", "highlight": ["blinking"], "minute_offset": 1,
-     "text": "The radio was already blinking."},
-    {"scene": "console", "minute_offset": 1, "highlight": ["lights", "window"], "delivery": "whispering",
-     "chat": [{"from": "them", "text": "Did you turn off the lights?", "at": 0.1},
-              {"from": "them", "text": "It is right outside your window.", "at": 1.3}],
-     "text": "Did you turn off the lights? It is right outside your window."},
-    {"scene": "protocol", "pose": "stand", "tag": "PROTOCOL #2", "highlight": ["lights", "off"], "minute_offset": 2,
-     "text": "Protocol number two. Keep the lights off after the knocking."},
-    {"scene": "bunk", "pose": "crouch", "highlight": ["every"], "minute_offset": 2,
-     "text": "So I killed every light on the station."},
-    {"scene": "window", "pose": "lookback", "highlight": ["saw"], "minute_offset": 3, "delivery": "whispering",
-     "text": "And through the window, I saw it."},
-    {"scene": "window", "pose": "fear", "alarm": true, "highlight": ["hand", "outside"], "minute_offset": 3,
-     "text": "A hand. Pressed against the glass. From the outside."},
-    {"scene": "console", "minute_offset": 4, "highlight": ["you"],
-     "chat": [{"from": "me", "text": "What is it?", "at": 0.1},
-              {"from": "them", "text": "It's you.", "at": 1.6}],
-     "text": "I typed, what is it. The answer came in one second. It's you."},
-    {"scene": "airlock", "pose": "lookback", "knock": true, "highlight": ["again"], "minute_offset": 5,
-     "text": "Then the knocking started again. But this time,"},
-    {"scene": "airlock", "pose": "fear", "alarm": true, "crew": 2, "highlight": ["inside"], "minute_offset": 5,
-     "text": "it came from inside the station."}
+    {
+      "scene": "airlock",
+      "pose": "fear",
+      "knock": true,
+      "alarm": true,
+      "highlight": [
+        "knocks"
+      ],
+      "text": "Three knocks. Then silence."
+    },
+    {
+      "scene": "airlock",
+      "pose": "listen",
+      "highlight": [
+        "nothing"
+      ],
+      "text": "Nothing should be out there. The nearest ship is four hundred million kilometers away."
+    },
+    {
+      "scene": "corridor",
+      "pose": "walk",
+      "highlight": [
+        "ran"
+      ],
+      "minute_offset": 1,
+      "text": "I ran to the control room."
+    },
+    {
+      "scene": "console",
+      "pose": "reach",
+      "highlight": [
+        "blinking"
+      ],
+      "minute_offset": 1,
+      "text": "The radio was already blinking."
+    },
+    {
+      "scene": "console",
+      "minute_offset": 1,
+      "highlight": [
+        "lights",
+        "window"
+      ],
+      "delivery": "whispering",
+      "chat": [
+        {
+          "from": "them",
+          "text": "Did you turn off the lights?",
+          "at": 0.1
+        },
+        {
+          "from": "them",
+          "text": "It is right outside your window.",
+          "at": 1.3
+        }
+      ],
+      "text": "Did you turn off the lights? It is right outside your window."
+    },
+    {
+      "scene": "protocol",
+      "pose": "stand",
+      "tag": "PROTOCOL #2",
+      "highlight": [
+        "lights",
+        "off"
+      ],
+      "minute_offset": 2,
+      "text": "Protocol number two. Keep the lights off after the knocking."
+    },
+    {
+      "scene": "bunk",
+      "pose": "crouch",
+      "highlight": [
+        "every"
+      ],
+      "minute_offset": 2,
+      "text": "So I killed every light on the station."
+    },
+    {
+      "scene": "window",
+      "pose": "lookback",
+      "highlight": [
+        "saw"
+      ],
+      "minute_offset": 3,
+      "delivery": "whispering",
+      "text": "And through the window, I saw it.",
+      "dark": true,
+      "cam": 0
+    },
+    {
+      "scene": "window",
+      "pose": "fear",
+      "alarm": true,
+      "highlight": [
+        "hand",
+        "outside"
+      ],
+      "minute_offset": 3,
+      "text": "A hand. Pressed against the glass. From the outside.",
+      "dark": true,
+      "hand": true,
+      "cam": 0
+    },
+    {
+      "scene": "console",
+      "minute_offset": 4,
+      "highlight": [
+        "you"
+      ],
+      "chat": [
+        {
+          "from": "me",
+          "text": "What is it?",
+          "at": 0.1
+        },
+        {
+          "from": "them",
+          "text": "It's you.",
+          "at": 1.6
+        }
+      ],
+      "text": "I typed, what is it. The answer came in one second. It's you.",
+      "dark": true
+    },
+    {
+      "scene": "airlock",
+      "pose": "lookback",
+      "knock": true,
+      "highlight": [
+        "again"
+      ],
+      "minute_offset": 5,
+      "text": "Then the knocking started again. But this time,"
+    },
+    {
+      "scene": "airlock",
+      "pose": "fear",
+      "alarm": true,
+      "crew": 2,
+      "highlight": [
+        "inside"
+      ],
+      "minute_offset": 5,
+      "text": "it came from inside the station."
+    }
   ],
   "caption": "It knocked three times. Then a hand pressed against the glass. 👁️ Part 3 soon.",
-  "hashtags": ["#stickman", "#horrorstory", "#scifi", "#space", "#storytime"]
+  "hashtags": [
+    "#stickman",
+    "#horrorstory",
+    "#scifi",
+    "#space",
+    "#storytime"
+  ]
 }

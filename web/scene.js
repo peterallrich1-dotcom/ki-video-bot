@@ -147,6 +147,13 @@ function backWall(g, w, h, d, holeR) {
   earth.position.set(ox + 5, 0.5, -42); earthGlow.position.copy(earth.position); scene.add(earth, earthGlow);
   const crate = new THREE.Mesh(new THREE.BoxGeometry(.8, .6, .6), metal(0x3a4660, .5, .6)); crate.position.set(2.4, .3, -2.5); g.add(crate);
   const stripe = new THREE.Mesh(new THREE.BoxGeometry(.82, .08, .62), new THREE.MeshStandardMaterial({ map: hazardTex })); stripe.position.set(2.4, .5, -2.5); g.add(stripe);
+  const hand = new THREE.Group(); hand.position.set(0.25, h * .55 - .1, -d / 2 - .45); hand.visible = false; g.add(hand);
+  const hm = new THREE.MeshStandardMaterial({ color: 0x0a0a12, roughness: .4, metalness: .3, emissive: 0x300008 });
+  const palm = new THREE.Mesh(new THREE.BoxGeometry(.42, .5, .08), hm); hand.add(palm);
+  [[-.15, .38, .32, .1], [-.05, .45, .42, 0], [.05, .44, .4, 0], [.15, .38, .32, -.08], [-.27, .05, .26, .7]].forEach(([x, y, l, r]) => {
+    const f = new THREE.Mesh(new THREE.CapsuleGeometry(.04, l, 4, 8), hm); f.position.set(x, y, 0); f.rotation.z = r; hand.add(f); });
+  const handGlow = new THREE.PointLight(C.red, 0, 3, 1.5); handGlow.position.set(0.25, h * .55, -d / 2 - .1); g.add(handGlow);
+  areas.windowHand = { hand, handGlow };
   areas.window = { ox, fig: [-0.7, 0, -1.4], rot: .45,
     cams: [{ p: [0.9, 1.5, 3.6], l: [-0.2, 1.7, -3], p2: [0.7, 1.5, 3.0] },
            { p: [-2.6, 1.2, 2.2], l: [-0.8, 1.2, -1.8], p2: [-2.3, 1.2, 1.6] },
@@ -208,10 +215,10 @@ let doorGroup, beacon, beaconLight;
   beaconLight = new THREE.PointLight(C.red, 0, 10, 1.4); beaconLight.position.copy(beacon.position); g.add(beaconLight);
   const panel = new THREE.Mesh(new THREE.BoxGeometry(.5, .7, .1), metal(0x222a3c)); panel.position.set(2.4, 1.5, -d / 2 + .1); g.add(panel);
   const pb = new THREE.Mesh(new THREE.BoxGeometry(.2, .2, .05), neon(C.green, 2.5)); pb.position.set(2.4, 1.5, -d / 2 + .17); g.add(pb);
-  areas.airlock = { ox, fig: [-1.4, 0, -1.4], rot: -.6,
+  areas.airlock = { ox, fig: [-0.7, 0, -1.2], rot: -.5,
     cams: [{ p: [1.8, 1.4, 3.0], l: [-0.4, 1.8, -3], p2: [1.2, 1.5, 2.2] },
-           { p: [-2.6, 1.1, 0.4], l: [0, 2, -3.2], p2: [-2.2, 1.2, -0.2] },
-           { p: [0.6, 1.6, 0.6], l: [-0.5, 1.7, -3.2], p2: [0.4, 1.7, 0.0] }] };
+           { p: [-2.6, 1.3, 2.0], l: [-0.2, 1.6, -2.6], p2: [-2.3, 1.3, 1.4] },
+           { p: [1.0, 1.5, 1.8], l: [-0.6, 1.5, -2.4], p2: [0.8, 1.6, 1.2] }] };
 }
 // Kabine
 {
@@ -396,6 +403,9 @@ window.renderAt = (t) => {
   dust.position.set(A.ox, 0, -1); dust.rotation.y = t * .02; dust.position.y = Math.sin(t * .3) * .1;
   scene.fog.color.set(beat.alarm ? 0x200810 : 0x0a0820);
 
+  const wh = areas.windowHand; wh.hand.visible = !!beat.hand; wh.handGlow.intensity = beat.hand ? 4 + 2 * Math.sin(t * 6) : 0;
+  if (beat.hand) wh.hand.position.z = -4.45 + Math.min(1, tIn / .3) * .3;
+  renderer.toneMappingExposure = beat.dark ? .6 : .9;
   // Overlays
   setHud(beat); setCaption(t); setChat(beat, tIn); setTag(beat, tIn);
   $('alarm').style.opacity = beat.alarm ? (.35 + .45 * Math.max(0, Math.sin(t * 9))) : 0;
