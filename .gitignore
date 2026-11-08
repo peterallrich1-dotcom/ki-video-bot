@@ -3,3 +3,4 @@ __pycache__/
 *.pyc
 fonts/
 stories/test-comeback.json
+web/node_modules/

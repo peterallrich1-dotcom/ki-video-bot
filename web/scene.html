@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face { font-family: Anton; src: url(node_modules/@fontsource/anton/files/anton-latin-400-normal.woff2); }
+  @font-face { font-family: JBMono; font-weight: 700; src: url(node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-700-normal.woff2); }
+  @font-face { font-family: JBMono; font-weight: 400; src: url(node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-400-normal.woff2); }
+  html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #05060c; }
+  #c { position: absolute; inset: 0; width: 1080px !important; height: 1920px !important; }
+  .ov { position: absolute; pointer-events: none; }
+  #vignette { inset: 0; background: radial-gradient(ellipse at 50% 45%, transparent 45%, rgba(0,0,0,.65) 100%); }
+  #alarm { inset: 0; background: radial-gradient(ellipse at 50% 50%, transparent 35%, rgba(255,20,40,.55) 100%); opacity: 0; }
+  #flash { inset: 0; background: #fff; opacity: 0; }
+  #hud { left: 56px; top: 130px; font-family: JBMono; color: #eaf6ff; text-shadow: 0 0 12px rgba(80,220,255,.6); }
+  #hud .day { color: #ff3b5c; font-weight: 700; font-size: 30px; letter-spacing: 3px; text-shadow: 0 0 12px rgba(255,40,80,.8); }
+  #hud .day::before { content: "●"; margin-right: 10px; }
+  #hud .time { font-family: Anton; font-size: 110px; line-height: 1.05; letter-spacing: 2px; }
+  #hud .time small { font-family: JBMono; font-weight: 700; font-size: 32px; margin-left: 8px; }
+  #hud .line { width: 340px; height: 2px; background: linear-gradient(90deg, #3ef0ff, transparent); margin: 6px 0 12px; }
+  #hud .row { font-size: 26px; letter-spacing: 2px; color: #a9c7d8; margin: 4px 0; }
+  #hud .row b { color: #3ef0ff; }
+  #hud .row b.red { color: #ff3b5c; }
+  #series { right: 56px; top: 140px; font-family: JBMono; font-weight: 700; font-size: 24px; letter-spacing: 3px; color: rgba(220,240,255,.7); text-align: right; }
+  #series span { display: block; color: #ff8a3d; }
+  #caption { left: 40px; right: 40px; top: 1290px; text-align: center; font-family: Anton; font-size: 118px; line-height: 1.05; color: #fff;
+             text-transform: uppercase; -webkit-text-stroke: 10px #000; paint-order: stroke fill; text-shadow: 0 8px 30px rgba(0,0,0,.7); }
+  #caption .hl { color: #3ef0ff; }
+  #caption .hl2 { color: #ffd23e; }
+  #chat { left: 140px; right: 140px; top: 520px; border-radius: 44px; padding: 36px 40px 30px; opacity: 0;
+          background: linear-gradient(160deg, rgba(20,34,60,.88), rgba(10,14,30,.92)); border: 3px solid rgba(62,240,255,.55);
+          box-shadow: 0 0 60px rgba(62,240,255,.35), inset 0 0 40px rgba(62,240,255,.12); font-family: JBMono; }
+  #chat .hdr { color: #eaf6ff; font-weight: 700; font-size: 32px; letter-spacing: 2px; }
+  #chat .hdr::before { content: "◉ "; color: #3ef0ff; }
+  #chat .sub { color: #ff3b5c; font-size: 22px; margin: 6px 0 22px; }
+  #chat .msg { font-family: Arial, sans-serif; font-size: 40px; padding: 18px 28px; border-radius: 30px; margin: 14px 0; max-width: 82%; width: fit-content; }
+  #chat .them { background: #2a3550; color: #fff; }
+  #chat .me { background: linear-gradient(135deg, #2a7bff, #7a3cff); color: #fff; margin-left: auto; }
+  #tag { left: 0; right: 0; top: 650px; text-align: center; opacity: 0; }
+  #tag div { display: inline-block; background: linear-gradient(180deg, #ff2d4a, #c3102b); color: #fff; font-family: Anton; font-size: 100px;
+             padding: 14px 46px; border: 6px solid #fff; transform: rotate(-4deg); box-shadow: 0 0 60px rgba(255,30,60,.8); letter-spacing: 2px; }
+  #teaser { left: 0; right: 0; top: 1560px; text-align: center; font-family: Anton; font-size: 84px; color: #ff8a3d; opacity: 0;
+            -webkit-text-stroke: 8px #000; paint-order: stroke fill; text-shadow: 0 0 30px rgba(255,138,61,.8); }
+  #ai { left: 56px; bottom: 60px; font-family: JBMono; font-size: 24px; color: rgba(200,220,240,.5); }
+</style>
+<script type="importmap">{ "imports": { "three": "./node_modules/three/build/three.module.js", "three/addons/": "./node_modules/three/examples/jsm/" } }</script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="vignette" class="ov"></div>
+<div id="alarm" class="ov"></div>
+<div id="hud" class="ov"><div class="day" id="hDay">DAY 1</div><div class="time" id="hTime">03:12<small>UTC</small></div>
+  <div class="line"></div><div class="row">OXYGEN&nbsp;&nbsp;<b id="hO2">98%</b></div><div class="row">CREW&nbsp;&nbsp;&nbsp;&nbsp;<b class="red" id="hCrew">1</b></div></div>
+<div id="series" class="ov">THE LAST SIGNAL<span id="sPart">PART 1</span></div>
+<div id="chat" class="ov"><div class="hdr">EARTH CONTROL</div><div class="sub" id="chatSub">last contact: 412 days ago</div><div id="msgs"></div></div>
+<div id="tag" class="ov"><div id="tagText">PROTOCOL #1</div></div>
+<div id="caption" class="ov"></div>
+<div id="teaser" class="ov"></div>
+<div id="flash" class="ov"></div>
+<div id="ai" class="ov">AI-generated</div>
+<script type="module" src="scene.js"></script>
+</body>
+</html>
