@@ -4,3 +4,4 @@ __pycache__/
 fonts/
 stories/test-comeback.json
 web/node_modules/
+dist/
