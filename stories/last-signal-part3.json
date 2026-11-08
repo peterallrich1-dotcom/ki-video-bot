@@ -1,0 +1,181 @@
+{
+  "series": "The Last Signal",
+  "part": 3,
+  "day": 412,
+  "start_time": "03:22",
+  "oxygen": 96,
+  "crew": 2,
+  "title": "The Last Signal – Part 3: It wears my face",
+  "beats": [
+    {
+      "scene": "airlock",
+      "pose": "fear",
+      "alarm": true,
+      "highlight": [
+        "two"
+      ],
+      "text": "The crew counter said two. I have lived alone up here for over a year."
+    },
+    {
+      "scene": "corridor",
+      "pose": "lookback",
+      "dark": true,
+      "highlight": [
+        "walking"
+      ],
+      "minute_offset": 1,
+      "text": "Something was walking through the dark corridor behind me.",
+      "cam": 0
+    },
+    {
+      "scene": "corridor",
+      "pose": "walk",
+      "dark": true,
+      "highlight": [
+        "mine"
+      ],
+      "minute_offset": 1,
+      "cam": 2,
+      "text": "Slow footsteps. Perfectly matching mine."
+    },
+    {
+      "scene": "console",
+      "pose": "reach",
+      "highlight": [
+        "one"
+      ],
+      "minute_offset": 2,
+      "text": "Earth Control sent one line."
+    },
+    {
+      "scene": "console",
+      "minute_offset": 2,
+      "highlight": [
+        "look",
+        "watching"
+      ],
+      "delivery": "whispering",
+      "chat": [
+        {
+          "from": "them",
+          "text": "Do not look at it.",
+          "at": 0.1
+        },
+        {
+          "from": "them",
+          "text": "It learns by watching you.",
+          "at": 1.2
+        }
+      ],
+      "text": "Do not look at it. It learns by watching you."
+    },
+    {
+      "scene": "window",
+      "pose": "stand",
+      "highlight": [
+        "earth"
+      ],
+      "minute_offset": 3,
+      "cam": 0,
+      "text": "I hid by the window. Earth was right there. So blue. So close."
+    },
+    {
+      "scene": "window",
+      "pose": "stand",
+      "highlight": [
+        "reflection"
+      ],
+      "minute_offset": 3,
+      "cam": 1,
+      "twin": true,
+      "twin_pose": "stand",
+      "dark": true,
+      "text": "Then I saw a reflection in the glass."
+    },
+    {
+      "scene": "window",
+      "pose": "fear",
+      "alarm": true,
+      "highlight": [
+        "behind",
+        "face"
+      ],
+      "minute_offset": 3,
+      "cam": 1,
+      "twin": true,
+      "twin_pose": "reach",
+      "text": "It was standing right behind me. Same shirt. Same face."
+    },
+    {
+      "scene": "protocol",
+      "pose": "stand",
+      "tag": "PROTOCOL #3",
+      "highlight": [
+        "airlock",
+        "night"
+      ],
+      "minute_offset": 4,
+      "text": "Protocol number three. Never open the airlock from the inside at night."
+    },
+    {
+      "scene": "window",
+      "pose": "lookback",
+      "highlight": [
+        "gone"
+      ],
+      "minute_offset": 4,
+      "cam": 2,
+      "text": "When I turned around, it was gone."
+    },
+    {
+      "scene": "airlock",
+      "pose": "listen",
+      "highlight": [
+        "green"
+      ],
+      "minute_offset": 5,
+      "text": "But the airlock panel was glowing green."
+    },
+    {
+      "scene": "console",
+      "minute_offset": 5,
+      "alarm": true,
+      "highlight": [
+        "inside"
+      ],
+      "chat": [
+        {
+          "from": "them",
+          "text": "AIRLOCK CYCLE STARTED",
+          "at": 0.1
+        },
+        {
+          "from": "them",
+          "text": "Manual override: INSIDE",
+          "at": 1.0
+        }
+      ],
+      "text": "Someone had started the airlock. From the inside."
+    },
+    {
+      "scene": "airlock",
+      "pose": "fear",
+      "alarm": true,
+      "door_open": true,
+      "crew": 2,
+      "highlight": [
+        "opening"
+      ],
+      "minute_offset": 5,
+      "text": "And the door was already opening."
+    }
+  ],
+  "caption": "The crew counter said two. Then it wore my face. 🚪 Part 4 soon.",
+  "hashtags": [
+    "#stickman",
+    "#horrorstory",
+    "#scifi",
+    "#space",
+    "#storytime"
+  ]
+}
