@@ -13,7 +13,7 @@
      "text": "I'm the only one left up here."},
     {"scene": "console", "pose": "reach", "highlight": ["message"], "minute_offset": 1,
      "text": "Tonight, the radio got a message."},
-    {"scene": "console", "minute_offset": 1, "highlight": ["lights", "see"],
+    {"scene": "console", "minute_offset": 1, "highlight": ["lights", "see"], "delivery": "whispering",
      "chat": [{"from": "them", "text": "Turn off your lights.", "at": 0.2},
               {"from": "them", "text": "It can see you.", "at": 1.4}],
      "text": "Turn off your lights. It can see you."},
