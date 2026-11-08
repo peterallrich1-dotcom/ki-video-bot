@@ -14,5 +14,13 @@
     "youtube": "https://www.youtube.com/watch?v=-S3CARwHkGw",
     "instagram": "https://www.instagram.com/reel/Dfev3rlDRcY/",
     "upload_post_request_id": "03cb45430b7243b8af38c9f8cb78f06a"
+  },
+  {
+    "part": 3,
+    "story": "stories/last-signal-part3.json",
+    "scheduled_for": "2026-11-09T10:00:00+01:00",
+    "status": "scheduled",
+    "upload_post_job_id": "c7a598879c4a4e43b327a979ef2726d3",
+    "upload_post_request_id": "ddd77722e6d6408294d2d1d8f2140b68"
   }
 ]
