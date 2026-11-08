@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Jarvis</title>
+<meta name="theme-color" content="#07060a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Jarvis">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: Vollbild. Leuchtende Kugel in der Mitte (Tippen = sprechen), Status darüber, Gesprächstext darunter. */
+:root {
+  --bg: #07060a; --panel: #100b10; --line: #2a1519; --fg: #f4eaeb; --dim: #9a7f84;
+  --red: #ff2d3f; --glow: #ff6a5c; --green: #5fd38d; --amber: #ffb547; --ink: #1a0508;
+  --display: "Chakra Petch", "Arial Narrow", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body { background: var(--bg); color: var(--fg); font-family: var(--display); overflow: hidden; -webkit-tap-highlight-color: transparent; }
+.app {
+  height: 100%; display: flex; flex-direction: column; gap: 10px;
+  padding-top: max(14px, env(safe-area-inset-top)); padding-bottom: max(14px, env(safe-area-inset-bottom));
+  padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right));
+  max-width: 720px; margin: 0 auto;
+}
+header { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.brand { font-weight: 700; letter-spacing: .32em; font-size: 13px; text-transform: uppercase; }
+.state { font-family: var(--mono); font-size: 11px; color: var(--dim); letter-spacing: .08em; text-transform: uppercase; display: flex; align-items: center; gap: 6px; }
+.state i { width: 8px; height: 8px; border-radius: 50%; background: var(--dim); display: inline-block; }
+.state[data-s="wake"] i { background: var(--red); }
+.state[data-s="listening"] i { background: var(--green); }
+.state[data-s="speaking"] i { background: var(--glow); }
+.state[data-s="connecting"] i { background: var(--amber); }
+.stage { position: relative; flex: 1; min-height: 200px; cursor: pointer; border: 0; background: none; padding: 0; color: inherit; }
+.stage:focus-visible { outline: 2px solid var(--fg); outline-offset: 4px; }
+canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.hint { text-align: center; font-size: 15px; letter-spacing: .04em; min-height: 1.4em; }
+.hint b { color: var(--glow); font-weight: 600; }
+.log { font-family: var(--mono); font-size: 13px; line-height: 1.5; max-height: 26vh; overflow-y: auto; display: grid; gap: 6px; }
+.log p { margin: 0; overflow-wrap: anywhere; }
+.log .u { color: var(--dim); }
+.log .u::before { content: "› "; }
+.log .a { color: var(--glow); }
+.row { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.btn {
+  border: 1px solid var(--red); background: transparent; color: var(--fg); padding: 11px 16px; cursor: pointer;
+  font: 700 12px var(--display); letter-spacing: .18em; text-transform: uppercase;
+}
+.btn.primary { background: var(--red); color: var(--ink); }
+.btn[aria-pressed="true"] { border-color: var(--green); color: var(--green); }
+.btn:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+.btn[hidden] { display: none; }
+.err { font-family: var(--mono); font-size: 11px; color: var(--amber); text-align: center; min-height: 1.2em; }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand">Jarvis</div>
+    <div class="state" id="state" data-s="idle"><i></i><span id="stateText">bereit</span></div>
+  </header>
+
+  <button class="stage" id="stage" type="button" aria-label="Gespräch mit Jarvis starten oder beenden">
+    <canvas id="cv" aria-hidden="true"></canvas>
+  </button>
+
+  <div class="hint" id="hint">Tippe auf die Kugel und sprich mit mir.</div>
+  <div class="log" id="log" aria-live="polite"></div>
+  <div class="row">
+    <button class="btn" id="wakeBtn" type="button" aria-pressed="false">„Jarvis“-Modus</button>
+    <button class="btn primary" id="endBtn" type="button" hidden>Auflegen</button>
+  </div>
+  <div class="err" id="err"></div>
+</div>
+
+<script src="vendor/elevenlabs-client-1.29.0.js"></script>
+<script>
+(function () {
+  var AGENT_ID = 'agent_5501m6xpk9tye3x92gap4myzfqgy';
+  var WAKE = /\b(jarvis|jarvi|dschawis|tschawis|javis|jervis|charvis|scharvis|jarwis)\b/i;
+  var $ = function (id) { return document.getElementById(id); };
+
+  var conv = null, status = 'idle', mode = 'listening';
+  var wakeOn = false, rec = null, recRunning = false;
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  try { wakeOn = localStorage.getItem('jarvis.wake') === 'on'; } catch (e) {}
+
+  /* ---------- Anzeige ---------- */
+  var LABEL = { idle: 'bereit', wake: 'wartet auf „Jarvis“', connecting: 'verbindet', listening: 'hört zu', speaking: 'spricht' };
+  function setState(s) { status = s; $('state').dataset.s = s; $('stateText').textContent = LABEL[s] || s; render(); }
+  function render() {
+    var live = conv && (status === 'listening' || status === 'speaking' || status === 'connecting');
+    $('endBtn').hidden = !live;
+    $('wakeBtn').setAttribute('aria-pressed', wakeOn ? 'true' : 'false');
+    $('wakeBtn').hidden = !SR;
+    var h = $('hint');
+    if (status === 'connecting') h.textContent = 'Einen Moment…';
+    else if (status === 'listening') h.innerHTML = 'Ich höre dir zu. Sag <b>„Tschüss“</b> zum Auflegen.';
+    else if (status === 'speaking') h.textContent = 'Du kannst mich jederzeit unterbrechen.';
+    else if (status === 'wake') h.innerHTML = 'Sag einfach <b>„Jarvis“</b>, oder tippe auf die Kugel.';
+    else h.textContent = 'Tippe auf die Kugel und sprich mit mir.';
+  }
+  function err(msg) { $('err').textContent = msg || ''; }
+  function log(text, who) {
+    var p = document.createElement('p'); p.className = who; p.textContent = text;
+    var l = $('log'); l.appendChild(p);
+    while (l.children.length > 8) l.removeChild(l.firstChild);
+    l.scrollTop = l.scrollHeight;
+  }
+
+  /* ---------- Gespräch (ElevenLabs) ---------- */
+  function startConversation() {
+    if (conv || status === 'connecting') return;
+    if (!window.ElevenLabsClient) { err('Sprachmodul konnte nicht geladen werden. Prüfe deine Internetverbindung.'); return; }
+    stopWake();
+    err(''); setState('connecting');
+    window.ElevenLabsClient.Conversation.startSession({
+      agentId: AGENT_ID,
+      connectionType: 'webrtc',
+      onConnect: function () { setState('listening'); },
+      onModeChange: function (m) { mode = m.mode; if (conv) setState(m.mode === 'speaking' ? 'speaking' : 'listening'); },
+      onMessage: function (m) { if (m && m.message) log(m.message, (m.role || m.source) === 'user' ? 'u' : 'a'); },
+      onError: function (msg) { err('Fehler: ' + msg); },
+      onDisconnect: function () { conv = null; afterEnd(); }
+    }).then(function (c) { conv = c; render(); })
+      .catch(function (e) {
+        conv = null;
+        var m = String(e && (e.message || e) || '');
+        if (/permission|notallowed|denied/i.test(m)) err('Ich darf das Mikrofon nicht benutzen. Erlaube es in den Browser-Einstellungen.');
+        else err('Verbindung fehlgeschlagen: ' + m);
+        afterEnd();
+      });
+  }
+  function endConversation() { if (conv) { var c = conv; conv = null; c.endSession().catch(function () {}); } afterEnd(); }
+  function afterEnd() { if (wakeOn) { setState('wake'); setTimeout(startWake, 600); } else setState('idle'); }
+
+  $('stage').addEventListener('click', function () { if (conv) endConversation(); else startConversation(); });
+  $('endBtn').addEventListener('click', endConversation);
+
+  /* ---------- „Jarvis“ als Weckwort ---------- */
+  function startWake() {
+    if (!SR || !wakeOn || conv || recRunning) return;
+    try {
+      rec = new SR(); rec.lang = 'de-DE'; rec.continuous = true; rec.interimResults = true;
+      rec.onresult = function (ev) {
+        for (var i = ev.resultIndex; i < ev.results.length; i++) {
+          if (WAKE.test(ev.results[i][0].transcript)) { stopWake(); startConversation(); return; }
+        }
+      };
+      rec.onerror = function (ev) {
+        if (ev.error === 'not-allowed' || ev.error === 'service-not-allowed') {
+          wakeOn = false; save(); err('Für den „Jarvis“-Modus braucht die App das Mikrofon. Erlaube es in den Einstellungen.'); setState('idle');
+        }
+      };
+      rec.onend = function () { recRunning = false; if (wakeOn && !conv && status !== 'connecting') setTimeout(startWake, 300); };
+      rec.start(); recRunning = true;
+      if (status === 'idle') setState('wake');
+    } catch (e) { recRunning = false; }
+  }
+  function stopWake() { if (rec) { try { rec.onend = null; rec.abort(); } catch (e) {} } rec = null; recRunning = false; }
+  function save() { try { localStorage.setItem('jarvis.wake', wakeOn ? 'on' : 'off'); } catch (e) {} }
+  $('wakeBtn').addEventListener('click', function () {
+    wakeOn = !wakeOn; save(); err('');
+    if (wakeOn) { if (!conv) { setState('wake'); startWake(); } }
+    else { stopWake(); if (!conv) setState('idle'); }
+    render();
+  });
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) stopWake(); else if (wakeOn && !conv) startWake();
+  });
+
+  /* ---------- Kugel ---------- */
+  var cv = $('cv'), ctx = cv.getContext('2d'), W = 0, H = 0, t = 0, level = 0;
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var parts = [];
+  for (var i = 0; i < 110; i++) parts.push({ a: Math.random() * 6.283, r: 0.55 + Math.random() * 0.9, s: (0.1 + Math.random() * 0.5) * (Math.random() < .5 ? -1 : 1), z: Math.random() });
+  function size() {
+    var d = Math.min(window.devicePixelRatio || 1, 2), st = $('stage');
+    W = st.clientWidth; H = st.clientHeight; cv.width = W * d; cv.height = H * d; ctx.setTransform(d, 0, 0, d, 0, 0);
+  }
+  function frame() {
+    var target = 0;
+    if (conv) {
+      try { target = status === 'speaking' ? conv.getOutputVolume() : conv.getInputVolume(); } catch (e) {}
+      target = Math.min(1, target * 2.2);
+    }
+    level += (target - level) * 0.25;
+    var speed = status === 'connecting' ? 3 : status === 'idle' ? 0.7 : 1.4;
+    t += (reduce ? 0.003 : 0.012) * speed;
+    ctx.clearRect(0, 0, W, H);
+    var cx = W / 2, cy = H / 2, base = Math.min(W, H) * 0.16;
+    var R = base * (1 + Math.sin(t * 2) * 0.04 + level * 0.45);
+    var hue = status === 'listening' ? '95,211,141' : status === 'connecting' ? '255,181,71' : '255,45,63';
+    ctx.lineWidth = 1;
+    [1.8, 2.5].forEach(function (k, j) {
+      ctx.strokeStyle = 'rgba(' + hue + ',' + (0.3 - j * 0.12) + ')';
+      ctx.beginPath(); ctx.arc(cx, cy, base * k * (1 + level * 0.12), 0, 6.283); ctx.stroke();
+    });
+    parts.forEach(function (p) {
+      p.a += p.s * 0.01 * (reduce ? 0.2 : speed) * (1 + level * 2);
+      var rr = base * (1.2 + p.r * 1.5) * (1 + level * 0.15);
+      ctx.fillStyle = 'rgba(' + hue + ',' + (0.25 + p.z * 0.6) + ')';
+      ctx.fillRect(cx + Math.cos(p.a) * rr, cy + Math.sin(p.a) * rr * 0.55, 1.6, 1.6);
+    });
+    var g = ctx.createRadialGradient(cx, cy, 0, cx, cy, R * 3.2);
+    g.addColorStop(0, 'rgba(' + hue + ',.55)'); g.addColorStop(.4, 'rgba(' + hue + ',.15)'); g.addColorStop(1, 'rgba(' + hue + ',0)');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, cy, R * 3.2, 0, 6.283); ctx.fill();
+    var c = ctx.createRadialGradient(cx, cy, 0, cx, cy, R);
+    c.addColorStop(0, '#fff1e0');
+    c.addColorStop(.35, status === 'listening' ? '#9ff0bf' : status === 'connecting' ? '#ffd28a' : '#ff8a6a');
+    c.addColorStop(1, 'rgb(' + hue + ')');
+    ctx.fillStyle = c; ctx.beginPath(); ctx.arc(cx, cy, R, 0, 6.283); ctx.fill();
+    requestAnimationFrame(frame);
+  }
+  window.addEventListener('resize', size);
+  size(); frame();
+  setState(wakeOn && SR ? 'wake' : 'idle');
+  if (wakeOn && SR) startWake();
+  if (location.hash === '#talk') startConversation();
+})();
+</script>
+</body>
+</html>
