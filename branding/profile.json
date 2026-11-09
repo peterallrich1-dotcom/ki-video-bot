@@ -1,0 +1,9 @@
+{"part": 1, "duration": 3, "lead_in": 0, "clean": true, "captions": [],
+ "beats": [
+  {"start": 0, "end": 1, "scene": "window", "pose": "stand", "yaw": 3.1416, "day": 1, "time": "00:00", "oxygen": 98, "crew": 1,
+   "camOverride": {"p": [-0.55, 1.5, 1.9], "l": [-0.2, 1.95, -4], "fov": 38}},
+  {"start": 1, "end": 2, "scene": "window", "pose": "stand", "yaw": 0.25, "dark": true, "twin": true, "twin_pose": "stand", "twin_pos": [-1.05, 0, -2.25], "twin_yaw": 0.5,
+   "day": 1, "time": "00:00", "oxygen": 98, "crew": 2, "camOverride": {"p": [-0.35, 1.4, 1.1], "l": [-0.85, 1.38, -2.0], "fov": 26}},
+  {"start": 2, "end": 3, "scene": "airlock", "pose": "stand", "hideFig": true, "dark": true, "twin": true, "twin_pose": "stand", "door_open": "full", "twin_pos": [0, 0.5, -3.95], "twin_yaw": 0,
+   "day": 1, "time": "00:00", "oxygen": 98, "crew": 2, "camOverride": {"p": [0, 1.75, 1.6], "l": [0, 2.0, -4], "fov": 34}}
+ ]}

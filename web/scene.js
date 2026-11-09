@@ -429,17 +429,19 @@ function updateFigure(area, beat, t, tIn, prevPose) {
   let floatY = 0; if (pose === 'float') floatY = .25 + Math.sin(t * 1.3) * .12;
   const base = new THREE.Vector3(a.ox + a.fig[0], a.fig[1] + floatY + (pose === 'sit' && !a.sitHeight ? .3 : 0), a.fig[2]);
   const gait = pose === 'walk' ? (beat.run ? 'run' : 'walk') : null;
-  const yaw = (a.rot || 0) * (beat.facing || 1);
+  const yaw = beat.yaw != null ? beat.yaw : (a.rot || 0) * (beat.facing || 1);
   if (gait) { const sp = gait === 'run' ? .9 : .45; base.x += Math.sin(yaw) * tIn * sp; base.z += Math.cos(yaw) * tIn * sp; }
   fig.grp.position.copy(base); fig.grp.rotation.set(0, yaw, pose === 'float' ? Math.sin(t * .9) * .15 : 0);
   poseFigure(fig, jointsToVec(J, gait, t), t, pose === 'fear');
+  fig.grp.visible = !beat.hideFig; shadow.visible = !beat.hideFig;
   // Doppelgänger: steht hinter der Figur, gleiche Pose, leicht verzögert
   twin.grp.visible = !!beat.twin;
   if (beat.twin) {
     const Jt = poseJoints(beat.twin_pose || 'stand', t - .4, beat.twin_pose || 'stand', 1);
     const off = a.twin || [-.9, 0, -1.1];
     twin.grp.position.set(base.x + off[0], (a.fig[1] || 0) + off[1], base.z + off[2]);
-    twin.grp.rotation.set(0, area === 'airlock' ? .25 : (a.rot || 0) + .3, 0);
+    twin.grp.rotation.set(0, beat.twin_yaw != null ? beat.twin_yaw : area === 'airlock' ? .25 : (a.rot || 0) + .3, 0);
+    if (beat.twin_pos) twin.grp.position.set(a.ox + beat.twin_pos[0], beat.twin_pos[1], beat.twin_pos[2]);
     poseFigure(twin, jointsToVec(Jt, null, t), t, false);
     const appear = Math.min(1, tIn / .6);
     twin.grp.scale.setScalar(.98 + .02 * appear);
@@ -499,6 +501,7 @@ function setTag(beat, tIn) {
 window.setup = (timeline) => {
   TL = timeline;
   $('sPart').textContent = 'PART ' + TL.part;
+  if (TL.clean) for (const id of ['hud', 'series', 'caption', 'teaser', 'ai', 'vignette']) $(id).style.display = 'none';
   TL.beats.forEach((b, i) => { b._cam = b.cam != null ? b.cam : i % areas[b.scene || 'window'].cams.length; });
   return true;
 };
@@ -518,7 +521,9 @@ window.renderAt = (t) => {
   p.x += Math.sin(t * 7.1) * shake + Math.sin(t * 1.3) * .02; p.y += Math.sin(t * 6.3 + 1) * shake + Math.sin(t * 1.1) * .015;
   camera.position.copy(p);
   camera.lookAt(new THREE.Vector3(cp.l[0] + A.ox, cp.l[1], cp.l[2]));
-  camera.fov = 56 - ue * 4; camera.updateProjectionMatrix();
+  camera.fov = 56 - ue * 4;
+  if (beat.camOverride) { const o = beat.camOverride; camera.position.set(o.p[0] + A.ox, o.p[1], o.p[2]); camera.lookAt(o.l[0] + A.ox, o.l[1], o.l[2]); camera.fov = o.fov || 50; }
+  camera.updateProjectionMatrix();
 
   updateFigure(area, beat, t, tIn, prev && prev.scene === beat.scene ? prev.pose : beat.pose);
 
@@ -548,11 +553,11 @@ window.renderAt = (t) => {
   $('alarm').style.opacity = beat.alarm ? (.35 + .45 * Math.max(0, Math.sin(t * 9))) : 0;
   const sinceCut = tIn; const cut = prev && (prev.scene !== beat.scene);
   $('flash').style.background = '#000';
-  $('flash').style.opacity = k === 0 ? Math.max(0, 1 - t * 2.5) : (cut ? Math.max(0, .7 - sinceCut * 7) : 0);
+  $('flash').style.opacity = TL.clean ? 0 : k === 0 ? Math.max(0, 1 - t * 2.5) : (cut ? Math.max(0, .7 - sinceCut * 7) : 0);
   const teaserOn = t > TL.duration - 1.6;
   $('teaser').style.opacity = teaserOn ? Math.min(1, (t - (TL.duration - 1.6)) / .25) : 0;
   $('teaser').textContent = `PART ${TL.part + 1} →`;
-  document.body.style.opacity = Math.min(1, (TL.duration - t) / .45);
+  document.body.style.opacity = TL.clean ? 1 : Math.min(1, (TL.duration - t) / .45);
 
   composer.render();
   return true;
