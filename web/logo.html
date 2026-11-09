@@ -1,0 +1,93 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face { font-family: Creepster; src: url(node_modules/@fontsource/creepster/files/creepster-latin-400-normal.woff2); }
+  @font-face { font-family: Nosifer; src: url(node_modules/@fontsource/nosifer/files/nosifer-latin-400-normal.woff2); }
+  @font-face { font-family: Anton; src: url(node_modules/@fontsource/anton/files/anton-latin-400-normal.woff2); }
+  html, body { margin: 0; width: 1080px; height: 1080px; overflow: hidden; background: #000; }
+  .v { position: absolute; inset: 0; display: none; overflow: hidden; }
+  .grain::after { content: ""; position: absolute; inset: 0; opacity: .14; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+
+  /* 1: SS-Monogramm, blutrot, tropfend */
+  #v1 { background: radial-gradient(circle at 50% 46%, #3a0306 0%, #140103 45%, #000 75%); }
+  #v1 .mono { position: absolute; left: 0; right: 0; top: 230px; text-align: center; font-family: Creepster; font-size: 560px; line-height: 1;
+    color: #e0101c; letter-spacing: -20px; text-shadow: 0 0 40px rgba(255,20,30,.75), 0 0 120px rgba(255,0,20,.45), 0 12px 0 #5a0006; }
+  #v1 .ring { position: absolute; inset: 70px; border-radius: 50%; border: 10px solid rgba(224,16,28,.55); box-shadow: 0 0 60px rgba(255,20,30,.5), inset 0 0 60px rgba(255,20,30,.35); }
+
+  /* 2: Auge in der Dunkelheit */
+  #v2 { background: radial-gradient(circle at 50% 50%, #3a0508 0%, #120204 45%, #000 78%); }
+  #v2 svg { position: absolute; inset: 0; }
+
+  /* 3: Schriftzug SCARY STORY mit Mond */
+  #v3 { background: radial-gradient(circle at 50% 30%, #1d1030 0%, #0a0612 50%, #000 85%); }
+  #v3 .moon { position: absolute; left: 340px; top: 120px; width: 400px; height: 400px; border-radius: 50%;
+    background: radial-gradient(circle at 42% 40%, #fff5f0 0%, #f2c9b8 45%, #b02030 100%); box-shadow: 0 0 120px rgba(255,60,60,.7), 0 0 300px rgba(200,0,30,.4); }
+  #v3 .moon::after { content: ""; position: absolute; inset: 0; border-radius: 50%;
+    background: radial-gradient(circle at 30% 60%, rgba(120,20,30,.35) 0 8%, transparent 9%), radial-gradient(circle at 65% 35%, rgba(120,20,30,.3) 0 6%, transparent 7%), radial-gradient(circle at 60% 70%, rgba(120,20,30,.25) 0 10%, transparent 11%); }
+  #v3 .t1, #v3 .t2 { position: absolute; left: 0; right: 0; text-align: center; font-family: Creepster; line-height: .9; }
+  #v3 .t1 { top: 500px; font-size: 250px; color: #fff; text-shadow: 0 0 30px rgba(255,255,255,.35), 0 10px 0 #300; letter-spacing: 6px; }
+  #v3 .t2 { top: 705px; font-size: 250px; color: #e0101c; text-shadow: 0 0 40px rgba(255,20,30,.8), 0 10px 0 #400; letter-spacing: 6px; }
+  #v3 .trees { position: absolute; left: 0; right: 0; bottom: 0; height: 150px; }
+</style>
+</head>
+<body>
+<div id="v1" class="v grain"><div class="ring"></div><div class="mono">SS</div>
+  <svg width="1080" height="1080" style="position:absolute;inset:0">
+    <g fill="#c00a16" transform="translate(0,-105)">
+      <path d="M330 760 q8 0 8 10 l-3 70 q-5 22 -10 0 l-3 -70 q0 -10 8 -10z"/>
+      <path d="M455 770 q7 0 7 9 l-2 105 q-5 25 -10 0 l-2 -105 q0 -9 7 -9z"/>
+      <path d="M612 765 q7 0 7 9 l-2 55 q-5 18 -10 0 l-2 -55 q0 -9 7 -9z"/>
+      <path d="M735 772 q8 0 8 10 l-3 85 q-5 24 -10 0 l-3 -85 q0 -10 8 -10z"/>
+      <circle cx="455" cy="910" r="11"/><circle cx="735" cy="890" r="9"/>
+    </g>
+  </svg>
+</div>
+
+<div id="v2" class="v grain">
+  <svg width="1080" height="1080" viewBox="0 0 1080 1080">
+    <defs>
+      <radialGradient id="iris" cx="50%" cy="50%" r="50%">
+        <stop offset="0" stop-color="#ffde7a"/><stop offset=".25" stop-color="#ff6a00"/><stop offset=".6" stop-color="#d00818"/><stop offset="1" stop-color="#3a0005"/>
+      </radialGradient>
+      <radialGradient id="white" cx="50%" cy="45%" r="60%">
+        <stop offset="0" stop-color="#e8dcd0"/><stop offset=".7" stop-color="#a8968a"/><stop offset="1" stop-color="#3a2a26"/>
+      </radialGradient>
+      <filter id="glow"><feGaussianBlur stdDeviation="18" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      <clipPath id="lid"><path d="M140 540 Q540 250 940 540 Q540 830 140 540Z"/></clipPath>
+    </defs>
+    <circle cx="540" cy="540" r="420" fill="none" stroke="#e0101c" stroke-opacity=".35" stroke-width="6"/>
+    <path d="M140 540 Q540 250 940 540 Q540 830 140 540Z" fill="url(#white)"/>
+    <g clip-path="url(#lid)">
+      <g stroke="#a01018" stroke-width="3" fill="none" opacity=".7">
+        <path d="M170 540 q60 -20 110 10 t90 -5"/><path d="M910 540 q-60 25 -110 -5 t-95 15"/><path d="M200 500 q50 10 90 -10"/><path d="M880 590 q-40 -20 -90 0"/>
+      </g>
+      <circle cx="540" cy="540" r="190" fill="url(#iris)" filter="url(#glow)"/>
+      <g stroke="#ffb040" stroke-opacity=".35" stroke-width="3">
+        <line x1="540" y1="360" x2="540" y2="420"/><line x1="540" y1="660" x2="540" y2="720"/><line x1="360" y1="540" x2="420" y2="540"/><line x1="660" y1="540" x2="720" y2="540"/>
+        <line x1="413" y1="413" x2="455" y2="455"/><line x1="625" y1="625" x2="667" y2="667"/><line x1="667" y1="413" x2="625" y2="455"/><line x1="413" y1="667" x2="455" y2="625"/>
+      </g>
+      <ellipse cx="540" cy="540" rx="38" ry="150" fill="#050000"/>
+      <ellipse cx="600" cy="470" rx="34" ry="22" fill="#fff" opacity=".85"/>
+      <rect x="0" y="0" width="1080" height="1080" fill="url(#shade)" opacity="0"/>
+    </g>
+    <path d="M140 540 Q540 250 940 540" fill="none" stroke="#000" stroke-width="26"/>
+    <path d="M140 540 Q540 830 940 540" fill="none" stroke="#000" stroke-width="18"/>
+    <g fill="#0a0303">
+      <path d="M220 470 l-40 -70 l60 50z"/><path d="M330 400 l-25 -85 l50 70z"/><path d="M450 362 l-8 -90 l32 82z"/><path d="M570 352 l10 -92 l18 90z"/><path d="M690 375 l30 -84 l4 92z"/><path d="M800 425 l50 -70 l-16 82z"/>
+    </g>
+  </svg>
+</div>
+
+<div id="v3" class="v grain"><div class="moon"></div><div class="t1">SCARY</div><div class="t2">STORY</div>
+  <svg class="trees" viewBox="0 0 1080 260" preserveAspectRatio="none">
+    <path fill="#000" d="M0 260 L0 170 L40 150 L60 90 L75 150 L120 120 L150 40 L170 120 L210 140 L260 110 L280 60 L300 120 L340 150 L400 160 L460 150 L520 165 L580 150 L640 160 L700 140 L760 120 L790 50 L810 120 L860 100 L900 30 L925 110 L970 130 L1010 80 L1035 140 L1080 150 L1080 260Z"/>
+  </svg>
+</div>
+<script>
+  window.show = (id) => { document.querySelectorAll('.v').forEach(e => e.style.display = 'none'); document.getElementById(id).style.display = 'block'; };
+</script>
+</body>
+</html>

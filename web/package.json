@@ -11,7 +11,9 @@
   "license": "ISC",
   "dependencies": {
     "@fontsource/anton": "^5.1.0",
+    "@fontsource/creepster": "^5.1.0",
     "@fontsource/jetbrains-mono": "^5.1.0",
+    "@fontsource/nosifer": "^5.1.0",
     "three": "^0.170.0"
   }
 }
