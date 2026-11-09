@@ -28,14 +28,19 @@ def main(path, preview=False):
     story = json.load(open(path, encoding="utf-8"))
     name = os.path.splitext(os.path.basename(path))[0]
     out = os.path.join(ROOT, "output", name)
+    os.makedirs(out, exist_ok=True)
     raw = os.path.join(out, "voice.mp3")
-    if not os.path.exists(raw):
-        sys.exit(f"Sprachaufnahme fehlt: {raw}")
-    voice = os.path.join(out, "voice_tight.wav")
-    tighten(raw, voice, story.get("tempo", 1.07))
-
-    narration = " ".join(b["text"] for b in story["beats"])
-    words = align.align(voice, narration)
+    if os.path.exists(raw):
+        # Stimme von ElevenLabs vorhanden: Pausen straffen, Wortzeiten schätzen
+        voice = os.path.join(out, "voice_tight.wav")
+        tighten(raw, voice, story.get("tempo", 1.07))
+        narration = " ".join(b["text"] for b in story["beats"])
+        words = align.align(voice, narration)
+    else:
+        # Kostenlose lokale Stimme (Kokoro)
+        import voice_free
+        voice = os.path.join(out, "voice_free.wav")
+        words = voice_free.synthesize(story, voice, speed=story.get("tempo", 1.05))
     tl = timeline.build(story, words, LEAD_IN)
     tl_path = os.path.join(out, "timeline.json")
     json.dump(tl, open(tl_path, "w"), indent=1)
