@@ -38,6 +38,8 @@ eine Folge ohne Stimme oder ohne Upload ist wertlos.
 1. Lies `references/series.md` (Serienbibel: Prämisse, Protokolle, Handlungsbogen, Regeln),
    `episodes/log.json` und die letzten zwei Dateien in `stories/`.
 2. N = höchste Teilnummer im Log + 1 (oder höchste Story-Datei + 1, falls noch nicht gepostet).
+   Ist das Finale (Teil 12/13) schon erschienen, keine neue Folge erzeugen – siehe
+   "Serienende und nächste Serie" in `references/series.md`.
 3. Schreib `stories/last-signal-partN.json` im Format von `stories/last-signal-part2.json`:
    - Erster Satz = Hook, der direkt an den Cliffhanger der letzten Folge anschließt.
    - `day`, `oxygen` (sinkt langsam), `start_time`, `minute_offset` fortschreiben.

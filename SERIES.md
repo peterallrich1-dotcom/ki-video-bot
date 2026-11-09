@@ -41,3 +41,17 @@ Siehe `stories/last-signal-part1.json`. Felder pro Beat:
 - optional: `chat` (Funkmeldungen, `from` them/me, `at` Sekunden), `tag` ("PROTOCOL #N"),
   `alarm` (true), `minute_offset` (Minuten seit Folgenbeginn), `oxygen`, `crew`, `day`,
   `delivery` (ElevenLabs-Regieanweisung wie "whispering")
+
+## Serienende und nächste Serie
+- "The Last Signal" endet mit einem Finale in **Teil 12 oder 13** (Auflösung: Wer ist der Doppelgänger,
+  was ist mit der Erde, wer schreibt die Protokolle). Ab Teil 10 auf das Finale hinarbeiten.
+- Danach folgt die neue Serie **"Night Shift"**: Ein Strichmännchen arbeitet allein nachts an einer
+  Tankstelle, die Kunden werden immer seltsamer. Dafür braucht es eine neue 3D-Kulisse
+  (Tankstelle, Neonschild, Kasse, Kühlregale, Zapfsäulen im Regen), die noch NICHT gebaut ist.
+- Der Autopilot startet "Night Shift" nicht selbst. Nach dem Finale: keine neue Folge erzeugen,
+  sondern melden, dass die Kulisse für "Night Shift" vorbereitet werden muss.
+
+## Veröffentlichungsrhythmus
+- Aktuell: eine Folge alle 3 Tage (kostenlose Pläne: Upload-Post 10 Uploads/Monat).
+- Nach einem Upgrade von Upload-Post und ElevenLabs gewünscht: 3 Folgen pro Tag um 12, 17 und 21 Uhr
+  (Europe/Berlin), dann auch TikTok.
