@@ -52,6 +52,8 @@ Siehe `stories/last-signal-part1.json`. Felder pro Beat:
   sondern melden, dass die Kulisse für "Night Shift" vorbereitet werden muss.
 
 ## Veröffentlichungsrhythmus
-- Aktuell: eine Folge alle 3 Tage (kostenlose Pläne: Upload-Post 10 Uploads/Monat).
-- Nach einem Upgrade von Upload-Post und ElevenLabs gewünscht: 3 Folgen pro Tag um 12, 17 und 21 Uhr
+- Aktuell: eine Folge pro Tag (17:43 Uhr). Stimme kostenlos lokal (Kokoro).
+- Upload-Post (Gratis: 10/Monat) postet automatisch; ist das Kontingent leer, landet die
+  Folge in `abholen/` und der Besitzer lädt sie selbst hoch.
+- Nach einem Upgrade von Upload-Post gewünscht: 3 Folgen pro Tag um 12, 17 und 21 Uhr
   (Europe/Berlin), dann auch TikTok.

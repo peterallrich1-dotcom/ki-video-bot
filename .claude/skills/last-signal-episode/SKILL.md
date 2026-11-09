@@ -1,6 +1,6 @@
 ---
 name: last-signal-episode
-description: Erstellt und veröffentlicht eine neue Folge der 3D-Strichmännchen-Horrorserie "The Last Signal" (Hochformat 9:16, englisch) – Story schreiben, Erzählerstimme über den ElevenLabs-Connector, 3D-Video mit three.js rendern (Repo peterallrich1-dotcom/ki-video-bot) und über den Upload-Post-Connector auf Instagram Reels und YouTube Shorts posten. Immer verwenden, wenn der Nutzer eine neue Folge, den nächsten Part, ein neues Video für "The Last Signal", den Video-Bot, den Autopiloten oder seine Stickman-/Raumstations-Serie erwähnt – auch bei kurzen Bitten wie "mach Part 3", "nächstes Video", "poste die nächste Folge" oder wenn eine geplante Aufgabe den Bot startet.
+description: Erstellt und veröffentlicht eine neue Folge der 3D-Strichmännchen-Horrorserie "The Last Signal" (Hochformat 9:16, englisch) – Story schreiben, kostenlose lokale Erzählerstimme (Kokoro), 3D-Video mit three.js rendern (Repo peterallrich1-dotcom/ki-video-bot) und über den Upload-Post-Connector auf Instagram Reels und YouTube Shorts posten. Immer verwenden, wenn der Nutzer eine neue Folge, den nächsten Part, ein neues Video für "The Last Signal", den Video-Bot, den Autopiloten oder seine Stickman-/Raumstations-Serie erwähnt – auch bei kurzen Bitten wie "mach Part 3", "nächstes Video", "poste die nächste Folge" oder wenn eine geplante Aufgabe den Bot startet.
 ---
 
 # The Last Signal – neue Folge
@@ -29,9 +29,11 @@ git pull origin main
 (cd web && npm install --no-audit --no-fund)   # three.js + Fonts; node_modules ist nicht im Repo
 ```
 Chromium + Playwright sind in der Cloud-Umgebung vorinstalliert; nichts weiter installieren.
-Prüfe, dass die Connector-Tools `mcp__ElevenLabs__*` und `mcp__Upload-Post__*` verfügbar
-sind (ggf. per ToolSearch laden). Fehlt einer, abbrechen und das dem Nutzer sagen –
-eine Folge ohne Stimme oder ohne Upload ist wertlos.
+```bash
+pip install -q kokoro-onnx soundfile   # kostenlose Stimme; Modell (~350 MB) lädt beim ersten Lauf von GitHub
+```
+Prüfe, ob die Connector-Tools `mcp__Upload-Post__*` verfügbar sind (ggf. per ToolSearch
+laden). Fehlen sie, die Folge trotzdem erstellen und über `deliver.py` zum Abholen ablegen.
 
 ## 1. Story schreiben
 
@@ -54,17 +56,13 @@ eine Folge ohne Stimme oder ohne Upload ist wertlos.
 4. `python narration.py stories/last-signal-partN.json` gibt den Sprechtext aus; zähl die
    Wörter (`| wc -w`) und kürze/ergänze, bis 95–120 Wörter erreicht sind.
 
-## 2. Stimme (ElevenLabs-Connector)
+## 2. Stimme (kostenlos, lokal)
 
-- `creative_generate_speech`: model_id `eleven_v4`, voice_id `BVPhWQykET1TSvfGzrUr`
-  ("Jack – Deep Dark Horror Narrator"), prompt = Sprechtext aus narration.py.
-- Mit `creative_get_flow_run_status` pollen, bis fertig; die erste fertige Generation nehmen.
-- Jede Generation kostet Credits. Kommt "Free generations are busy", wurde nichts berechnet:
-  ca. eine Minute warten (Hintergrund-`sleep`) und dann **einmal** neu starten. Nie eine
-  laufende Generation doppelt anstoßen.
-- MP3 herunterladen:
-  `curl -sS -o output/last-signal-partN/voice.mp3 "<content_url>"`
-  (Host elevenlabsusercontent.com ist in der Umgebung freigegeben).
+Nichts zu tun: `make_video.py` erzeugt die Stimme automatisch mit Kokoro (Stimme `bm_lewis`,
+tiefer gemacht, mit leichtem Hall), wenn **keine** `output/last-signal-partN/voice.mp3`
+existiert. Jeder Satz wird einzeln vertont, dadurch sitzen die Untertitel genau.
+ElevenLabs wird nicht mehr genutzt (Kosten/Limit). Nur falls der Besitzer das ausdrücklich
+wünscht: ElevenLabs-MP3 als `voice.mp3` ablegen, dann nimmt `make_video.py` diese.
 
 ## 3. 3D-Video rendern
 
@@ -103,13 +101,17 @@ Ergebnis: `output/last-signal-partN/last-signal-partN.mp4` + `meta.json`. Prüfe
    Aufruf mit `confirmed: true`. Alles andere (andere Plattformen, Profile, Inhalte,
    TikTok) braucht eine neue Zustimmung.
 5. `get_status` pollen bis `completed`. Lehnt Upload-Post mit `upgrade_url` ab
-   (Free-Plan: 10 Uploads/Monat, kein TikTok): nicht wiederholen, Folge trotzdem
-   committen und im Log `"pending_upload": true` setzen.
+   (Free-Plan: 10 Uploads/Monat, kein TikTok) oder fehlt der Connector: nicht wiederholen,
+   sondern `python deliver.py output/last-signal-partN/meta.json` ausführen. Das legt MP4 +
+   Caption-Textdatei in `abholen/` ab; mitcommitten. Im Log `"status": "abholen"` setzen.
+   Der Besitzer lädt diese Folgen selbst vom Handy hoch.
 
 ## 5. Abschließen
 
 - Eintrag an `episodes/log.json` anhängen: part, story, posted_at (UTC), youtube,
   instagram, upload_post_request_id.
 - Commit + `git push origin main`, Nachricht "Folge N veröffentlicht".
-- Antwort an den Nutzer auf Deutsch, kurz: Teil, Titel, Dauer, beide Links, und falls
-  etwas nicht geklappt hat, was und warum.
+- Antwort an den Nutzer auf Deutsch, kurz: Teil, Titel, Dauer, beide Links – oder bei
+  `abholen`: den Link
+  https://github.com/peterallrich1-dotcom/ki-video-bot/tree/main/abholen und dass er die
+  Folge selbst hochladen soll. Falls etwas nicht geklappt hat: was und warum.
