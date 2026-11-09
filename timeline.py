@@ -39,7 +39,7 @@ def build(story, words, lead_in=0.3, end_pad=1.8):
     for k, b in enumerate(beats):
         start = 0.0 if k == 0 else starts[k] - 0.08
         end = (starts[k + 1] - 0.08) if k + 1 < len(beats) else duration
-        e = {key: b[key] for key in ("scene", "pose", "chat", "chat_sub", "tag", "alarm", "knock", "facing", "cam", "hand", "dark", "twin", "twin_pose", "door_open")
+        e = {key: b[key] for key in ("scene", "pose", "chat", "chat_sub", "tag", "alarm", "knock", "facing", "cam", "hand", "dark", "twin", "twin_pose", "door_open", "run", "flicker")
              if key in b}
         e.update(start=round(start, 3), end=round(end, 3), **_hud(story, b))
         tl_beats.append(e)

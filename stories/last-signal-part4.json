@@ -1,0 +1,190 @@
+{
+  "series": "The Last Signal",
+  "part": 4,
+  "day": 412,
+  "start_time": "03:28",
+  "oxygen": 95,
+  "crew": 2,
+  "title": "The Last Signal – Part 4: It knows my name",
+  "beats": [
+    {
+      "scene": "airlock",
+      "pose": "fear",
+      "door_open": "full",
+      "alarm": true,
+      "highlight": [
+        "space"
+      ],
+      "cam": 0,
+      "text": "The airlock door slid open. Behind it, there should only be empty space."
+    },
+    {
+      "scene": "airlock",
+      "pose": "fear",
+      "door_open": "full",
+      "twin": true,
+      "twin_pose": "stand",
+      "dark": true,
+      "highlight": [
+        "waiting"
+      ],
+      "cam": 0,
+      "text": "Instead, someone was standing inside. Waiting."
+    },
+    {
+      "scene": "airlock",
+      "pose": "lookback",
+      "door_open": "full",
+      "twin": true,
+      "twin_pose": "reach",
+      "highlight": [
+        "smiled"
+      ],
+      "cam": 1,
+      "text": "It looked at me with my own eyes. Then it smiled."
+    },
+    {
+      "scene": "corridor",
+      "pose": "walk",
+      "run": true,
+      "facing": 1,
+      "highlight": [
+        "ran"
+      ],
+      "minute_offset": 1,
+      "cam": 2,
+      "text": "I sealed the door and ran."
+    },
+    {
+      "scene": "corridor",
+      "pose": "lookback",
+      "flicker": true,
+      "dark": true,
+      "highlight": [
+        "flickering"
+      ],
+      "minute_offset": 1,
+      "cam": 0,
+      "text": "Behind me, every light on the station started flickering."
+    },
+    {
+      "scene": "console",
+      "pose": "reach",
+      "highlight": [
+        "waiting"
+      ],
+      "minute_offset": 2,
+      "cam": 0,
+      "text": "Earth Control was already waiting."
+    },
+    {
+      "scene": "console",
+      "minute_offset": 2,
+      "highlight": [
+        "warned",
+        "name"
+      ],
+      "delivery": "whispering",
+      "cam": 2,
+      "chat": [
+        {
+          "from": "them",
+          "text": "We warned you.",
+          "at": 0.1
+        },
+        {
+          "from": "them",
+          "text": "Now it knows your name.",
+          "at": 1.0
+        }
+      ],
+      "text": "We warned you. Now it knows your name."
+    },
+    {
+      "scene": "protocol",
+      "pose": "stand",
+      "tag": "PROTOCOL #4",
+      "highlight": [
+        "name",
+        "never"
+      ],
+      "minute_offset": 3,
+      "text": "Protocol number four. If Earth Control asks for your name, never give it."
+    },
+    {
+      "scene": "bunk",
+      "pose": "crouch",
+      "flicker": true,
+      "highlight": [
+        "never"
+      ],
+      "minute_offset": 3,
+      "text": "But I never told them my name."
+    },
+    {
+      "scene": "console",
+      "minute_offset": 4,
+      "highlight": [
+        "ago"
+      ],
+      "cam": 1,
+      "chat": [
+        {
+          "from": "me",
+          "text": "How do you know my name?",
+          "at": 0.1
+        },
+        {
+          "from": "them",
+          "text": "You told us. Five minutes ago.",
+          "at": 1.8
+        }
+      ],
+      "text": "I typed, how do you know my name. They answered. You told us. Five minutes ago."
+    },
+    {
+      "scene": "window",
+      "pose": "fear",
+      "dark": true,
+      "highlight": [
+        "running"
+      ],
+      "minute_offset": 4,
+      "cam": 0,
+      "text": "Five minutes ago, I was running through the corridor."
+    },
+    {
+      "scene": "console",
+      "pose": "lookback",
+      "twin": true,
+      "twin_pose": "stand",
+      "flicker": true,
+      "highlight": [
+        "radio"
+      ],
+      "minute_offset": 4,
+      "cam": 0,
+      "text": "So who was standing at this radio?"
+    },
+    {
+      "scene": "airlock",
+      "pose": "fear",
+      "alarm": true,
+      "crew": 3,
+      "highlight": [
+        "three"
+      ],
+      "minute_offset": 5,
+      "cam": 2,
+      "text": "Then the crew counter changed again. Three."
+    }
+  ],
+  "caption": "The airlock opened. Someone was already inside. 👁️ Part 5 soon.",
+  "hashtags": [
+    "#stickman",
+    "#horrorstory",
+    "#scifi",
+    "#space",
+    "#storytime"
+  ]
+}

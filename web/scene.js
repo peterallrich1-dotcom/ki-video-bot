@@ -230,7 +230,7 @@ const screens = [];
   });
   const btns = [];
   for (let i = 0; i < 14; i++) { const b = new THREE.Mesh(new THREE.BoxGeometry(.14, .04, .14), neon([C.cyan, C.magenta, C.orange, C.green][i % 4], 2)); b.position.set(-1.9 + i * .29, .97, -d / 2 + 1.25); g.add(b); btns.push(b); }
-  areas.console = { ox, btns, fig: [0.2, 0, -1.6], rot: -.35,
+  areas.console = { ox, btns, fig: [0.2, 0, -1.6], rot: -.35, twin: [-1.1, 0, -0.5],
     cams: [{ p: [2.4, 1.6, 2.6], l: [0, 1.4, -2.6], p2: [1.6, 1.5, 1.9] },
            { p: [-1.9, 1.3, 1.3], l: [0.2, 1.3, -2.0], p2: [-1.6, 1.3, 0.8] },
            { p: [0, 2.8, 2.2], l: [0, 1.2, -2.6], p2: [0, 2.4, 1.2] }] };
@@ -271,7 +271,7 @@ let doorGroup, beacon, beaconLight;
   beaconLight = new THREE.PointLight(C.red, 0, 10, 1.4); beaconLight.position.copy(beacon.position); g.add(beaconLight);
   const panel = new THREE.Mesh(new THREE.BoxGeometry(.5, .7, .1), metal(0x222a3c)); panel.position.set(2.4, 1.5, -d / 2 + .1); g.add(panel);
   const pb = new THREE.Mesh(new THREE.BoxGeometry(.2, .2, .05), neon(C.green, 2.5)); pb.position.set(2.4, 1.5, -d / 2 + .17); g.add(pb);
-  areas.airlock = { ox, fig: [-0.7, 0, -1.2], rot: -.5,
+  areas.airlock = { ox, fig: [-0.7, 0, -1.2], rot: -.5, twin: [0.7, .5, -2.75],
     cams: [{ p: [1.8, 1.4, 3.0], l: [-0.4, 1.8, -3], p2: [1.2, 1.5, 2.2] },
            { p: [-2.6, 1.3, 2.0], l: [-0.2, 1.6, -2.6], p2: [-2.3, 1.3, 1.4] },
            { p: [1.0, 1.5, 1.8], l: [-0.6, 1.5, -2.4], p2: [0.8, 1.6, 1.2] }] };
@@ -396,7 +396,6 @@ function poseJoints(name, t, prevName, blend) {
   for (const k in B) out[k] = [A[k][0] + (B[k][0] - A[k][0]) * blend, A[k][1] + (B[k][1] - A[k][1]) * blend];
   const breathe = Math.sin(t * 2.4) * 3;
   for (const k of ['head', 'neck', 'le', 're', 'lh', 'rh']) out[k][1] += breathe;
-  if (name === 'walk') { const s = Math.sin(t * 6); out.lf[0] += s * 40; out.rf[0] -= s * 40; out.lk[0] += s * 20; out.rk[0] -= s * 20; out.lh[0] -= s * 25; out.rh[0] += s * 25; }
   if (name === 'knock') { const k = Math.max(0, Math.sin(t * 9)); out.rh[0] += k * 30; }
   if (name === 'fear') { const j = Math.sin(t * 31) * 4; out.head[0] += j; out.lh[0] += j; out.rh[0] -= j; }
   out.lh[1] += Math.sin(t * 1.7) * 4; out.rh[1] += Math.sin(t * 1.9 + 1) * 4;
@@ -407,9 +406,19 @@ function poseJoints(name, t, prevName, blend) {
   for (const k of ['le', 'lh']) out[k][0] -= 10; for (const k of ['re', 'rh']) out[k][0] += 10;
   return out;
 }
-function jointsToVec(J) {
-  const P = {}; const zoff = { le: -.06, lh: -.04, lk: -.03, lf: -.02, re: .06, rh: .04, rk: .03, rf: .02 };
+function jointsToVec(J, gait, t) {
+  const P = {}; const zoff = { le: -.02, lh: -.01, lk: 0, lf: 0, re: .02, rh: .01, rk: 0, rf: 0 };
   for (const k in J) P[k] = new THREE.Vector3(J[k][0] * S, J[k][1] * S, zoff[k] || 0);
+  if (gait) {   // Gehzyklus: Beine und Arme schwingen nach vorne/hinten, Körper wippt
+    const f = gait === 'run' ? 9 : 6, a = gait === 'run' ? 1.5 : 1, ph = t * f, sw = Math.sin(ph);
+    const lift = (x) => Math.max(0, Math.sin(x)) * .06 * a;
+    P.lf.z += sw * .2 * a; P.rf.z -= sw * .2 * a; P.lk.z += sw * .11 * a; P.rk.z -= sw * .11 * a;
+    P.lf.y += lift(ph + 1.6); P.rf.y += lift(ph + 1.6 + Math.PI); P.lk.y += lift(ph + 1.6) * .6; P.rk.y += lift(ph + 1.6 + Math.PI) * .6;
+    P.lh.z -= sw * .16 * a; P.rh.z += sw * .16 * a; P.le.z -= sw * .07 * a; P.re.z += sw * .07 * a;
+    const bob = Math.abs(Math.cos(ph)) * .025 * a;
+    for (const k of ['head', 'neck', 'hip', 'le', 're', 'lh', 'rh', 'ls', 'rs', 'lp', 'rp']) if (P[k]) P[k].y += bob;
+    if (gait === 'run') for (const k of ['head', 'neck', 'ls', 'rs']) if (P[k]) P[k].z += .06;
+  }
   return P;
 }
 function updateFigure(area, beat, t, tIn, prevPose) {
@@ -419,17 +428,19 @@ function updateFigure(area, beat, t, tIn, prevPose) {
   const J = poseJoints(pose, t, prevPose, e);
   let floatY = 0; if (pose === 'float') floatY = .25 + Math.sin(t * 1.3) * .12;
   const base = new THREE.Vector3(a.ox + a.fig[0], a.fig[1] + floatY + (pose === 'sit' && !a.sitHeight ? .3 : 0), a.fig[2]);
-  if (pose === 'walk') base.z -= tIn * .35;
-  fig.grp.position.copy(base); fig.grp.rotation.set(0, (a.rot || 0) * (beat.facing || 1), pose === 'float' ? Math.sin(t * .9) * .15 : 0);
-  poseFigure(fig, jointsToVec(J), t, pose === 'fear');
+  const gait = pose === 'walk' ? (beat.run ? 'run' : 'walk') : null;
+  const yaw = (a.rot || 0) * (beat.facing || 1);
+  if (gait) { const sp = gait === 'run' ? .9 : .45; base.x += Math.sin(yaw) * tIn * sp; base.z += Math.cos(yaw) * tIn * sp; }
+  fig.grp.position.copy(base); fig.grp.rotation.set(0, yaw, pose === 'float' ? Math.sin(t * .9) * .15 : 0);
+  poseFigure(fig, jointsToVec(J, gait, t), t, pose === 'fear');
   // Doppelgänger: steht hinter der Figur, gleiche Pose, leicht verzögert
   twin.grp.visible = !!beat.twin;
   if (beat.twin) {
     const Jt = poseJoints(beat.twin_pose || 'stand', t - .4, beat.twin_pose || 'stand', 1);
     const off = a.twin || [-.9, 0, -1.1];
     twin.grp.position.set(base.x + off[0], (a.fig[1] || 0) + off[1], base.z + off[2]);
-    twin.grp.rotation.set(0, (a.rot || 0) + .3, 0);
-    poseFigure(twin, jointsToVec(Jt), t, false);
+    twin.grp.rotation.set(0, area === 'airlock' ? .25 : (a.rot || 0) + .3, 0);
+    poseFigure(twin, jointsToVec(Jt, null, t), t, false);
     const appear = Math.min(1, tIn / .6);
     twin.grp.scale.setScalar(.98 + .02 * appear);
   }
@@ -518,7 +529,7 @@ window.renderAt = (t) => {
   areas.console.btns.forEach((b, i) => b.visible = Math.sin(t * 4 + i * 1.7) > -.2);
   const knock = beat.knock ? Math.max(0, Math.sin(tIn * Math.PI * 2 / .55)) ** 8 : 0;
   doorGroup.position.z = -3.4 + knock * .05;
-  const open = beat.door_open ? Math.min(1, Math.max(0, (tIn - .3) / Math.max(.8, dur - .6))) : 0;
+  const open = beat.door_open === 'full' ? 1 : beat.door_open ? Math.min(1, Math.max(0, (tIn - .3) / Math.max(.8, dur - .6))) : 0;
   doorGroup.position.x = -open * 3.4; doorGroup.rotation.z = -open * 1.2;
   const alarmOn = beat.alarm && Math.sin(t * 9) > 0;
   beacon.material.color.setScalar(alarmOn ? 4 : .4).multiply(new THREE.Color(C.red));
@@ -529,13 +540,15 @@ window.renderAt = (t) => {
 
   const wh = areas.windowHand; wh.hand.visible = !!beat.hand; wh.handGlow.intensity = beat.hand ? 4 + 2 * Math.sin(t * 6) : 0;
   if (beat.hand) wh.hand.position.z = -4.45 + Math.min(1, tIn / .3) * .3;
-  renderer.toneMappingExposure = beat.dark ? .6 : .9;
+  let expo = beat.dark ? .6 : .9;
+  if (beat.flicker) { const fb = Math.floor(t * 14); const hv = Math.sin(fb * 91.7) * 43758.5; if (hv - Math.floor(hv) > .62) expo *= .18; }
+  renderer.toneMappingExposure = expo;
   // Overlays
   setHud(beat); setCaption(t); setChat(beat, tIn); setTag(beat, tIn);
   $('alarm').style.opacity = beat.alarm ? (.35 + .45 * Math.max(0, Math.sin(t * 9))) : 0;
   const sinceCut = tIn; const cut = prev && (prev.scene !== beat.scene);
-  $('flash').style.opacity = cut ? Math.max(0, .55 - sinceCut * 3.5) : (k === 0 ? Math.max(0, 1 - t * 2.5) : 0);
-  if (k === 0 && t < .4) { $('flash').style.background = '#000'; } else { $('flash').style.background = '#fff'; }
+  $('flash').style.background = '#000';
+  $('flash').style.opacity = k === 0 ? Math.max(0, 1 - t * 2.5) : (cut ? Math.max(0, .7 - sinceCut * 7) : 0);
   const teaserOn = t > TL.duration - 1.6;
   $('teaser').style.opacity = teaserOn ? Math.min(1, (t - (TL.duration - 1.6)) / .25) : 0;
   $('teaser').textContent = `PART ${TL.part + 1} →`;
