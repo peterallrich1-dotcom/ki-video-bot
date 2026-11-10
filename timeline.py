@@ -62,5 +62,5 @@ def build(story, words, lead_in=0.3, end_pad=1.8):
     for a, b in zip(caps, caps[1:]):
         if b["start"] - a["end"] < 0.5:
             a["end"] = b["start"]
-    return {"part": story["part"], "duration": round(duration, 3), "lead_in": lead_in,
+    return {"part": story["part"], "finale": bool(story.get("finale")), "duration": round(duration, 3), "lead_in": lead_in,
             "beats": tl_beats, "captions": caps}

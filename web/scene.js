@@ -556,7 +556,7 @@ window.renderAt = (t) => {
   $('flash').style.opacity = TL.clean ? 0 : k === 0 ? Math.max(0, 1 - t * 2.5) : (cut ? Math.max(0, .7 - sinceCut * 7) : 0);
   const teaserOn = t > TL.duration - 1.6;
   $('teaser').style.opacity = teaserOn ? Math.min(1, (t - (TL.duration - 1.6)) / .25) : 0;
-  $('teaser').textContent = `PART ${TL.part + 1} →`;
+  $('teaser').textContent = TL.finale ? 'THE END…?' : `PART ${TL.part + 1} →`;
   document.body.style.opacity = TL.clean ? 1 : Math.min(1, (TL.duration - t) / .45);
 
   composer.render();

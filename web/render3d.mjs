@@ -41,6 +41,19 @@ if (fi >= 0) {                       // Vorschau: nur einzelne Bilder als PNG
 }
 
 const n = Math.ceil(tl.duration * FPS);
+const ci = rest.indexOf('--chunk');   // Teilbereich ohne Ton rendern (für paralleles Rendern)
+if (ci >= 0) {
+  const [a, b] = rest[ci + 1].split(':').map(Number);
+  const ffc = spawn('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'image2pipe', '-c:v', 'mjpeg', '-r', String(FPS), '-i', '-',
+    '-c:v', 'libx264', '-preset', 'medium', '-crf', '19', '-pix_fmt', 'yuv420p', out], { stdio: ['pipe', 'inherit', 'inherit'] });
+  for (let f = a; f < Math.min(b, n); f++) {
+    await page.evaluate(t => window.renderAt(t), f / FPS);
+    const buf = await page.screenshot({ type: 'jpeg', quality: 92 });
+    if (!ffc.stdin.write(buf)) await new Promise(r => ffc.stdin.once('drain', r));
+  }
+  ffc.stdin.end(); await new Promise(r => ffc.on('close', r));
+  await browser.close(); server.close(); process.exit(0);
+}
 const ff = spawn('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'image2pipe', '-c:v', 'mjpeg', '-r', String(FPS), '-i', '-',
   '-i', voice, '-i', sound,
   '-filter_complex', `[1:a]adelay=${Math.round(tl.lead_in * 1000)}|${Math.round(tl.lead_in * 1000)},volume=1.0[v];[2:a]volume=0.55[m];[v][m]amix=inputs=2:duration=longest:normalize=0,alimiter=limit=0.95[a]`,
