@@ -16,7 +16,7 @@ import soundfile as sf
 ROOT = os.path.dirname(os.path.abspath(__file__))
 MODELS = os.path.join(ROOT, "models")
 BASE = "https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/"
-DEFAULT_VOICE = os.environ.get("FREE_VOICE", "bm_lewis")
+DEFAULT_VOICE = os.environ.get("FREE_VOICE", "af_heart")   # weich, natürlich (beste Kokoro-Qualität)
 GAP = 0.12          # Pause zwischen Sätzen (Sekunden)
 _k = None
 
@@ -69,8 +69,9 @@ def synthesize(story, out_wav, voice=None, speed=1.0):
         t += dur + GAP
     raw = os.path.splitext(out_wav)[0] + "_raw.wav"
     sf.write(raw, np.concatenate(parts), sr)
-    # Horror-Klang: etwas tiefer (Dauer bleibt gleich), leichter Raumhall, Lautheit angleichen
-    af = ("asetrate=24000*0.92,aresample=24000,atempo=1.087,"
-          "aecho=0.8:0.5:60|120:0.25|0.15,highpass=f=70,loudnorm=I=-16")
+    # Sanfte Bearbeitung: keine Tonhöhenänderung, kein Echo (klang blechern) – nur etwas Wärme,
+    # leichte Kompression und gleichmäßige Lautheit
+    af = ("highpass=f=60,lowpass=f=11000,equalizer=f=180:t=q:w=1:g=2,"
+          "acompressor=threshold=-20dB:ratio=2.5:attack=10:release=150,loudnorm=I=-16")
     subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", raw, "-af", af, "-ar", "44100", out_wav], check=True)
     return words

@@ -58,8 +58,8 @@ laden). Fehlen sie, die Folge trotzdem erstellen und über `deliver.py` zum Abho
 
 ## 2. Stimme (kostenlos, lokal)
 
-Nichts zu tun: `make_video.py` erzeugt die Stimme automatisch mit Kokoro (Stimme `bm_lewis`,
-tiefer gemacht, mit leichtem Hall), wenn **keine** `output/last-signal-partN/voice.mp3`
+Nichts zu tun: `make_video.py` erzeugt die Stimme automatisch mit Kokoro (Stimme `af_heart`,
+weich und natürlich, ohne Pitch-/Hall-Effekte – die tiefe Lewis-Stimme mit Hall gefiel dem Besitzer nicht), wenn **keine** `output/last-signal-partN/voice.mp3`
 existiert. Jeder Satz wird einzeln vertont, dadurch sitzen die Untertitel genau.
 ElevenLabs wird nicht mehr genutzt (Kosten/Limit). Nur falls der Besitzer das ausdrücklich
 wünscht: ElevenLabs-MP3 als `voice.mp3` ablegen, dann nimmt `make_video.py` diese.
