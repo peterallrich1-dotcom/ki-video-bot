@@ -30,8 +30,20 @@
     "part": 4,
     "story": "stories/last-signal-part4.json",
     "scheduled_for": "2026-11-09T18:00:00+01:00",
-    "status": "scheduled",
+    "status": "posted",
     "upload_post_job_id": "f783a1795d3146e6aea73e4013549ea5",
-    "upload_post_request_id": "8c6be75486e8401aaaa19a33f7ce6a99"
+    "upload_post_request_id": "8c6be75486e8401aaaa19a33f7ce6a99",
+    "posted_at": "2026-11-09T17:02:35Z",
+    "youtube": "https://www.youtube.com/watch?v=Fvyzrn1l_IE",
+    "instagram": "https://www.instagram.com/reel/Dfh0hLcoa21/"
+  },
+  {
+    "part": 5,
+    "finale": true,
+    "story": "stories/last-signal-part5.json",
+    "status": "posted",
+    "posted_at": "2026-11-10T11:22:21Z",
+    "youtube": "https://www.youtube.com/watch?v=btToQOGtqs8",
+    "upload_post_request_id": "994645e92d514b46aa8a1ac8e1c5b517"
   }
 ]

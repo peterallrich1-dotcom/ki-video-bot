@@ -43,7 +43,7 @@ Siehe `stories/last-signal-part1.json`. Felder pro Beat:
   `delivery` (ElevenLabs-Regieanweisung wie "whispering")
 
 ## Serienende und nächste Serie
-- "The Last Signal" endet mit einem Finale in **Teil 12 oder 13** (Auflösung: Wer ist der Doppelgänger,
+- "The Last Signal" ist mit dem **Finale in Teil 5** (10.11.2026) abgeschlossen (früher geplant: Teil 12/13) (Auflösung: Wer ist der Doppelgänger,
   was ist mit der Erde, wer schreibt die Protokolle). Ab Teil 10 auf das Finale hinarbeiten.
 - Danach folgt die neue Serie **"Night Shift"**: Ein Strichmännchen arbeitet allein nachts an einer
   Tankstelle, die Kunden werden immer seltsamer. Dafür braucht es eine neue 3D-Kulisse

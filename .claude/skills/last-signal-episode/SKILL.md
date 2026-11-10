@@ -40,7 +40,7 @@ laden). Fehlen sie, die Folge trotzdem erstellen und über `deliver.py` zum Abho
 1. Lies `references/series.md` (Serienbibel: Prämisse, Protokolle, Handlungsbogen, Regeln),
    `episodes/log.json` und die letzten zwei Dateien in `stories/`.
 2. N = höchste Teilnummer im Log + 1 (oder höchste Story-Datei + 1, falls noch nicht gepostet).
-   Ist das Finale (Teil 12/13) schon erschienen, keine neue Folge erzeugen – siehe
+   Hat ein Log-Eintrag `"finale": true` (Teil 5 ist das Finale), keine neue Folge erzeugen – siehe
    "Serienende und nächste Serie" in `references/series.md`.
 3. Schreib `stories/last-signal-partN.json` im Format von `stories/last-signal-part2.json`:
    - Erster Satz = Hook, der direkt an den Cliffhanger der letzten Folge anschließt.
