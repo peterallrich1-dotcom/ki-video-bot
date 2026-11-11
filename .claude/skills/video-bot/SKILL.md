@@ -63,6 +63,24 @@ python make_video.py <story>             # ~25 s Rechenzeit pro Videosekunde, im
 ```
 Ergebnis: `output/<name>/<name>.mp4` + `meta.json`. 3 Standbilder + Lautstärke prüfen.
 
+## 4b. Qualitätskontrolle – Pflicht vor jedem Upload
+Der Besitzer will ein flüssiges, fehlerfreies Video, das "schön fürs Gehirn" ist und das man nicht
+wegwischen will. Deshalb **selbst kontrollieren**, nicht nur Standbilder:
+1. **Bewegung Bild für Bild:** Für jeden Beat mit `walk`/`run`, `twin` oder Posenwechsel 8
+   aufeinanderfolgende Bilder ziehen (`ffmpeg -ss <t> -i <mp4> -vf "fps=8,scale=200:-1,tile=8x1" -frames:v 1 ...`)
+   und prüfen: Beine schwingen nach vorne/hinten (nicht seitlich, keine Schere), keine Gelenke
+   springen, Figur gleitet nicht durch Boden/Wände/Möbel.
+2. **Schnitte:** Je 6 Bilder um jeden Szenenwechsel: kein Flackern, kein Weißblitz, kein Bild mit
+   Kamera in einem Objekt, Untertitel springt mit.
+3. **Bildaufbau:** Figur (und Doppelgänger/Kunde) im Bild und nicht angeschnitten, nichts
+   überbelichtet oder zu dunkel, Chat/Schild verdecken nicht das Gesicht, Untertitel nie über den
+   Bildrand.
+4. **Ton:** Lautstärke prüfen (`volumedetect`, mean etwa −20 bis −15 dB), Stimme passt zur Länge.
+5. **Tempo:** keine Pause länger als ~0,4 s ohne Untertitel; jeder Beat bringt etwas Neues.
+Findest du einen Fehler: beheben (Story, `cam`, Pose oder `web/scene.js`), neu rendern, erneut
+prüfen. Erst wenn alles sauber ist, einplanen. Behobene Fehlerarten kurz in `episodes/insights.md`
+notieren, damit sie nicht wiederkommen.
+
 ## 5. Einplanen (Upload-Post)
 Freigabe des Besitzers (8.–11.11.2026): *"Der Bot darf jede neue Folge ohne Rückfrage auf
 Instagram und YouTube veröffentlichen"* und *"ab jetzt voll automatisch … auch mal das Thema
