@@ -1,0 +1,124 @@
+{
+  "series": "Night Shift",
+  "series_name": "Night Shift",
+  "part": 1,
+  "hud_style": "gas",
+  "ambience": "rain",
+  "night": 1,
+  "start_time": "02:47",
+  "customers": 0,
+  "outfit": {
+    "shirt": "#c8202c",
+    "pants": "#22262e",
+    "logo": false
+  },
+  "chat_title": "MANAGER",
+  "chat_sub": "last seen: 3 years ago",
+  "twin_style": "customer",
+  "title": "Night Shift – Part 1: The rules on the register",
+  "beats": [
+    {
+      "scene": "gas_exterior",
+      "pose": "stand",
+      "highlight": [
+        "alone"
+      ],
+      "cam": 2,
+      "text": "I took the night shift at a gas station in the middle of nowhere. Alone."
+    },
+    {
+      "scene": "gas_counter",
+      "pose": "reach",
+      "highlight": [
+        "rules"
+      ],
+      "cam": 0,
+      "text": "Taped to the register was a list of rules."
+    },
+    {
+      "scene": "gas_counter",
+      "tag": "RULE #1",
+      "pose": "stand",
+      "highlight": [
+        "three"
+      ],
+      "cam": 2,
+      "text": "Rule number one. No customers between three and four."
+    },
+    {
+      "scene": "gas_aisle",
+      "pose": "walk",
+      "highlight": [
+        "fridge"
+      ],
+      "minute_offset": 13,
+      "cam": 0,
+      "text": "At three oh two, the fridge at the back started humming."
+    },
+    {
+      "scene": "gas_window",
+      "pose": "lookback",
+      "headlights": true,
+      "highlight": [
+        "car"
+      ],
+      "minute_offset": 14,
+      "cam": 0,
+      "text": "Then a car pulled in. Headlights on. Engine off."
+    },
+    {
+      "scene": "gas_counter",
+      "pose": "fear",
+      "chime": true,
+      "customers": 1,
+      "twin": true,
+      "twin_pose": "stand",
+      "highlight": [
+        "door"
+      ],
+      "minute_offset": 15,
+      "cam": 2,
+      "text": "The door chimed. Someone walked in."
+    },
+    {
+      "scene": "gas_counter",
+      "pose": "stand",
+      "customers": 1,
+      "chat": [
+        {
+          "from": "them",
+          "text": "Don't look at its face.",
+          "at": 0.2
+        }
+      ],
+      "highlight": [
+        "face"
+      ],
+      "minute_offset": 15,
+      "cam": 0,
+      "text": "My phone buzzed. A text from my manager. Don't look at its face."
+    },
+    {
+      "scene": "gas_aisle",
+      "pose": "fear",
+      "twin": true,
+      "twin_pose": "reach",
+      "flicker": true,
+      "customers": 1,
+      "highlight": [
+        "smiling"
+      ],
+      "minute_offset": 16,
+      "cam": 0,
+      "text": "I looked anyway. It was smiling at me."
+    }
+  ],
+  "caption": "Rule number one: no customers between 3 and 4 AM. ⛽ Part 2 soon.",
+  "hashtags": [
+    "#stickman",
+    "#horrorstory",
+    "#nightshift",
+    "#creepy",
+    "#storytime"
+  ]
+}

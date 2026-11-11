@@ -4,6 +4,13 @@
 def _hud(story, b):
     h0, m0 = map(int, b.get("start_time", story.get("start_time", "03:12")).split(":"))
     mins = h0 * 60 + m0 + b.get("minute_offset", 0)
+    if story.get("hud_style") == "gas":
+        h = mins // 60 % 24
+        cust = b.get("customers", story.get("customers", 0))
+        left = (6 * 60 - mins) % (24 * 60)
+        return {"time": f"{(h % 12) or 12:02d}:{mins % 60:02d}", "hud": {
+            "top": f"NIGHT {b.get('night', story.get('night', 1))}", "unit": "AM" if h < 12 else "PM",
+            "rows": [["SHIFT ENDS", f"{left // 60}H {left % 60:02d}M"], ["CUSTOMERS", str(cust), "red"]]}}
     return {
         "day": b.get("day", story.get("day", 1)),
         "time": f"{(mins // 60) % 24:02d}:{mins % 60:02d}",
@@ -39,7 +46,7 @@ def build(story, words, lead_in=0.3, end_pad=1.8):
     for k, b in enumerate(beats):
         start = 0.0 if k == 0 else starts[k] - 0.08
         end = (starts[k + 1] - 0.08) if k + 1 < len(beats) else duration
-        e = {key: b[key] for key in ("scene", "pose", "chat", "chat_sub", "tag", "alarm", "knock", "facing", "cam", "hand", "dark", "twin", "twin_pose", "door_open", "run", "flicker")
+        e = {key: b[key] for key in ("scene", "pose", "chat", "chat_sub", "tag", "alarm", "knock", "facing", "cam", "hand", "dark", "twin", "twin_pose", "door_open", "run", "flicker", "twin_style", "chat_title", "headlights", "yaw")
              if key in b}
         e.update(start=round(start, 3), end=round(end, 3), **_hud(story, b))
         tl_beats.append(e)
@@ -62,5 +69,6 @@ def build(story, words, lead_in=0.3, end_pad=1.8):
     for a, b in zip(caps, caps[1:]):
         if b["start"] - a["end"] < 0.5:
             a["end"] = b["start"]
-    return {"part": story["part"], "finale": bool(story.get("finale")), "duration": round(duration, 3), "lead_in": lead_in,
+    extra = {k: story[k] for k in ("series_name", "outfit", "chat_title", "chat_sub", "twin_style", "teaser") if k in story}
+    return {**extra, "part": story["part"], "finale": bool(story.get("finale")), "duration": round(duration, 3), "lead_in": lead_in,
             "beats": tl_beats, "captions": caps}

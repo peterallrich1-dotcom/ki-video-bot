@@ -1,5 +1,5 @@
 # Autopilot
 
-Der komplette Ablauf für eine neue Folge steht im Skill
-`.claude/skills/last-signal-episode/SKILL.md` (Serienbibel: `references/series.md`).
-Eine geplante Session liest diesen Skill und führt ihn vollständig aus.
+Alle 3 Tage um 10:31 Uhr (Europe/Berlin) startet eine geplante Session und führt den Skill
+`.claude/skills/video-bot/SKILL.md` aus: Auswertung, Serienwahl, neues Video, Post um 12:00 Uhr.
+Serien und Rotation: `series/README.md`.

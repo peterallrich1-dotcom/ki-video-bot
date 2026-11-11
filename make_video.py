@@ -46,7 +46,7 @@ def main(path, preview=False):
     json.dump(tl, open(tl_path, "w"), indent=1)
 
     # Sounddesign: Whoosh bei Szenenwechsel, Hit bei Protokoll-Schildern, Piepser bei Funk, Alarm
-    whooshes, hits, beeps, alarms, knocks = [], [], [], [], []
+    whooshes, hits, beeps, alarms, knocks, chimes = [], [], [], [], [], []
     for k, b in enumerate(tl["beats"]):
         if k and b.get("scene") != tl["beats"][k - 1].get("scene"):
             whooshes.append(b["start"])
@@ -58,8 +58,12 @@ def main(path, preview=False):
             alarms.append(b["start"])
         if b.get("knock"):
             knocks.append(b["start"])
+    for k, b in enumerate(story["beats"]):
+        if b.get("chime"):
+            chimes.append(tl["beats"][k]["start"] + 0.1)
     wav = os.path.join(out, "sound.wav")
-    music.make(wav, tl["duration"] + 0.5, beeps, alarms, whooshes=whooshes, hits=hits, knocks=knocks)
+    music.make(wav, tl["duration"] + 0.5, beeps, alarms, whooshes=whooshes, hits=hits, knocks=knocks,
+               ambience=story.get("ambience", "station"), chimes=chimes)
 
     web = os.path.join(ROOT, "web")
     mp4 = os.path.join(out, f"{name}.mp4")

@@ -14,7 +14,7 @@ def _add(out, s, sig):
     out[s:e] += sig[:e - s]
 
 
-def make(out_wav, seconds, beeps=(), alarms=(), whooshes=(), hits=(), knocks=()):
+def make(out_wav, seconds, beeps=(), alarms=(), whooshes=(), hits=(), knocks=(), ambience="station", chimes=()):
     n = int(SR * seconds)
     t = np.arange(n) / SR
     rng = np.random.default_rng(1)
@@ -24,6 +24,11 @@ def make(out_wav, seconds, beeps=(), alarms=(), whooshes=(), hits=(), knocks=())
              + np.sin(2 * np.pi * 82.4 * t) * 0.05 * (0.5 + 0.5 * np.sin(2 * np.pi * 0.09 * t))
              + np.sin(2 * np.pi * 110 * t) * 0.03)
     out = hum + drone
+    if ambience == "rain":
+        # Regen draußen + Brummen der Neonröhren statt Raumschiff-Drone
+        rn = rng.standard_normal(n)
+        rainn = (rn - np.convolve(rn, np.ones(6) / 6, mode="same")) * 0.25
+        out = hum * 0.6 + rainn + np.sin(2 * np.pi * 100 * t) * 0.025 + np.sin(2 * np.pi * 50 * t) * 0.05
     # Herzschlag-Puls, wird zum Ende schneller und lauter
     rise = np.clip(t / seconds, 0, 1)
     bt = 0.0
@@ -66,6 +71,11 @@ def make(out_wav, seconds, beeps=(), alarms=(), whooshes=(), hits=(), knocks=())
             knock = (np.sin(2 * np.pi * 90 * tt) * np.exp(-tt * 28)
                      + rng.standard_normal(L) * np.exp(-tt * 60) * 0.4) * 0.9
             _add(out, k + 0.15 + r * 0.55, knock)
+    for c in chimes:   # Türglocke der Tankstelle (ding-dong)
+        for k, f in enumerate((1318.5, 1046.5)):
+            L = int(1.0 * SR)
+            tt = np.arange(L) / SR
+            _add(out, c + k * 0.32, (np.sin(2 * np.pi * f * tt) + 0.3 * np.sin(2 * np.pi * 2 * f * tt)) * np.exp(-tt * 3.5) * 0.25)
     fade = np.minimum(1, np.minimum(t / 0.6, (seconds - t) / 1.0))
     out *= fade
     out = out / max(1e-9, np.abs(out).max()) * 0.8
